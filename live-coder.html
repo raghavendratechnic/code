@@ -1,1 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>vvvvvvvvvvv</style>
+</head>
+<body>
+ffffffq
+<script>
+(function(){
+  if(!window.__consoleHookInstalled){
+    window.__consoleHookInstalled = true;
 
+    function send(type,args){
+      try{
+        parent.postMessage({source:'iframe-console', type:type, args:args}, '*');
+      }catch(e){}
+    }
+
+    const origLog = console.log;
+    const origWarn = console.warn;
+    const origError = console.error;
+
+    console.log = function(){ send('log', Array.from(arguments)); origLog.apply(console, arguments); };
+    console.warn = function(){ send('warn', Array.from(arguments)); origWarn.apply(console, arguments); };
+    console.error = function(){ send('error', Array.from(arguments)); origError.apply(console, arguments); };
+
+    window.addEventListener('error', function(ev){
+      send('error', [ev.message + ' — ' + ev.filename + ':' + ev.lineno]);
+    });
+  }
+
+  try{ nnn
+ }catch(e){ console.error(e && e.stack ? e.stack : e); }
+})();
+</script>
+</body>
+</html>
