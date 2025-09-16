@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style></style>
+</head>
+<body>
+<style>
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Container for two modals */
+.modalContainer {
+  display: flex;
+  width: 80%;
+  max-width: 900px;
+  height: 70%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Individual modal boxes */
+.modalBox {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  position: relative;
+  background: #fff;
+  border-radius: 10px;
+}
+
+
+/* Floating close button using ::after */
+.closeModal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  z-index: 99;
+}
+
+.closeModal::after {
+  content: '\2715';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #007bff; /* or var(--linkB) */
+  color: #fff;
+  font-size: 18px;
+  line-height: 16px;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.closeModal:hover::after {
+  opacity: 0.8;
+}
+
+/* Resizer */
+.resizer2 {
+  width: 5px;
+  cursor: ew-resize;
+  background: transparent;
+}
+</style>
+
+<button id="openModalBtn">Open File Preview Modal</button>
+
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modalContainer" id="modalContainer">
+    
+    <!-- File List Modal -->
+    <div class="modalBox" id="fileListModal">
+<div id="fileList"></div>
+      </div>
+
+    <!-- Resizer -->
+    <div class="resizer2" id="resizer2"></div>
+
+    <!-- Preview Modal -->
+    <div class="modalBox" id="previewModal">
+      <div id="preview">
+    <h2 id="previewTitle">Select a file to preview</h2>
+    <div id="fileDetails"></div>
+    <div id="buttons"></div>
+    <pre id="codeBox"></pre>
+  </div>
+    </div>
+
+    <!-- Floating close button -->
+    
+
+  </div><span class="closeModal" id="closeModalBtn"></span>
+</div>
+
+<script>
+// Open modal
+document.getElementById('openModalBtn').addEventListener('click', () => {
+  document.getElementById('modalOverlay').style.display = 'flex';
+});
+
+// Close modal
+document.getElementById('closeModalBtn').addEventListener('click', () => {
+  document.getElementById('modalOverlay').style.display = 'none';
+});
+
+
+// Resizer functionality
+const resizer2 = document.getElementById('resizer2');
+const left = document.getElementById('fileListModal');
+const right = document.getElementById('previewModal');
+let isResizing2 = false;
+
+resizer.addEventListener('mousedown', function(e) {
+  isResizing2 = true;
+  document.body.style.cursor = 'ew-resize';
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!isResizing2) return;
+  const containerRect = document.getElementById('modalContainer').getBoundingClientRect();
+  const offset = e.clientX - containerRect.left;
+  const minWidth = 100; // minimum width for each modal
+  const maxWidth = containerRect.width - minWidth;
+  if (offset < minWidth || offset > maxWidth) return;
+  left.style.flex = 'none';
+  left.style.width = offset + 'px';
+  right.style.flex = '1';
+});
+
+document.addEventListener('mouseup', function() {
+  isResizing = false;
+  document.body.style.cursor = 'default';
+});
+</script>
+<script>
+(function(){
+  if(!window.__consoleHookInstalled){
+    window.__consoleHookInstalled = true;
+
+    function send(type,args){
+      try{
+        parent.postMessage({source:'iframe-console', type:type, args:args}, '*');
+      }catch(e){}
+    }
+
+    const origLog = console.log;
+    const origWarn = console.warn;
+    const origError = console.error;
+
+    console.log = function(){ send('log', Array.from(arguments)); origLog.apply(console, arguments); };
+    console.warn = function(){ send('warn', Array.from(arguments)); origWarn.apply(console, arguments); };
+    console.error = function(){ send('error', Array.from(arguments)); origError.apply(console, arguments); };
+
+    window.addEventListener('error', function(ev){
+      send('error', [ev.message + ' — ' + ev.filename + ':' + ev.lineno]);
+    });
+  }
+
+  try{  }catch(e){ console.error(e && e.stack ? e.stack : e); }
+})();
+</script>
+</body>
+</html>
